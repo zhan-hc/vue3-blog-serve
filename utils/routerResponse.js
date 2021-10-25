@@ -1,5 +1,5 @@
 function routerResponse(option={}){
-  return function(ctx,next){
+  return async function(ctx,next){
       ctx.success = function (data) {
           ctx.type = option.type || 'json'
           ctx.body = {
@@ -17,7 +17,7 @@ function routerResponse(option={}){
           }
       }
 
-      next()
+      await next()
   }
 
 }
