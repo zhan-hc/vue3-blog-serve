@@ -3,24 +3,31 @@ const jwt = require("jsonwebtoken")
 const verify = Promise.promisify(jwt.verify)
  
 async function check(ctx, next) {
-  let url = ctx.request.url
-  // 登录 不用检查
-  if (url == "/login") await next()
-  else {
-    let token = ctx.request.headers["authorization"]
-    if (token) {
-      let payload = await verify(token,'zhc')
-      let { time, timeout } = payload
-      let data = new Date().getTime()
-      if (data - time <= timeout) {
-        await next()
+  try{
+    let url = ctx.request.url
+    // 登录 不用检查
+    if (url == "/login") await next()
+    else {
+      let token = ctx.request.headers["authorization"]
+      if (token) {
+        let payload = await verify(token,'zhc')
+        let { iat, exp } = payload
+        if (iat<exp) {
+          await next()
+        }
       } else {
-        ctx.fail('登录已失效，请重新登录',50014)
+        ctx.fail('请登录',501)
       }
-    } else {
-      ctx.fail('请登录',501)
+    }
+  } catch (err) {
+    console.log(err.name, '异常信息')
+    if (err.name == 'TokenExpiredError') {
+      ctx.fail('token过期',10010)
+    }else if (err.name == 'JsonWebTokenError') {
+      ctx.fail('无效的token',10011)
     }
   }
 }
- 
+
+
 module.exports = check

@@ -1,34 +1,32 @@
 const router = require('koa-router')()
-const userService = require('../controllers/mysqlConfig')
+const db = require('../utils/db')
 const jwt=require('jsonwebtoken')
 router.prefix('/login')
 
 // 生成token
-function makeToken (name, password, exp) {
-    return token = jwt.sign({ name, password, exp }, 'zhc')
+function makeToken (data) {
+    let created = Math.floor(Date.now() / 1000)
+    return token = jwt.sign({ 
+      data, // 根据userId生成token
+      exp: created + 60 * 30, // 设置过期时间30分钟
+      iat: created, // 创建时间
+    }, 'zhc')
 }
-
+// 登录接口
 router.post('/',  async function (ctx, next) {
-  // ctx.success( '登录成功！')
   const { username,password } = ctx.request.body
-  await userService.findUserData(username).then((data) => {
-        const userData = data[0]
-        console.log(userData.password,password)
-        if (userData.password === password) {
-          let token = makeToken(username,password,60*60)
-          ctx.success(token)
-        } else {
-          ctx.fail('账号或密码错误！', 4002)
-        }
-      }).catch(() => {
-        ctx.fail('账号或密码错误！', 4002)
-      })
-  // if (username === 'admin' && password === 'admin') {
-  //   let token = makeToken(username,password,60*60)
-  //   ctx.success({data: token,successMsg: '登录成功！'})
-  // } else {
-    // ctx.fail('账号或密码错误！', 4002)
-  // } 
+  let data = await db.User.findAll({
+    attributes:['password','id'],
+    where: {
+      username: username
+    }
+  })
+  if (data.length === 1 && data[0].password === password) {
+    let token = makeToken(data[0].id)
+    ctx.success({token:token,userId: data[0].id})
+  } else {
+    ctx.fail('账号或密码错误！', 4002)
+  }
 })
 
 module.exports = router
