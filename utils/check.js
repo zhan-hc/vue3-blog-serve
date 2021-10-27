@@ -22,9 +22,9 @@ async function check(ctx, next) {
   } catch (err) {
     console.log(err.name, '异常信息')
     if (err.name == 'TokenExpiredError') {
-      ctx.fail('token过期',10010)
+      ctx.fail('token过期,请重新登录！',10010)
     }else if (err.name == 'JsonWebTokenError') {
-      ctx.fail('无效的token',10011)
+      ctx.fail('无效的token,请重新登录！',10011)
     }
   }
 }

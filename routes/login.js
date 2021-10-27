@@ -23,7 +23,7 @@ router.post('/',  async function (ctx, next) {
   })
   if (data.length === 1 && data[0].password === password) {
     let token = makeToken(data[0].id)
-    ctx.success({token:token,userId: data[0].id})
+    ctx.success({token:token,userId: data[0].id}, '登陆成功！')
   } else {
     ctx.fail('账号或密码错误！', 4002)
   }

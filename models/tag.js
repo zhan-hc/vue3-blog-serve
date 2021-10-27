@@ -11,6 +11,12 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(50),
       allowNull: true
     },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 1,
+      comment: "上下线：1上0下"
+    },
     createTime: {
       type: DataTypes.DATE,
       allowNull: true

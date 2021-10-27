@@ -1,10 +1,10 @@
 function routerResponse(option={}){
   return async function(ctx,next){
-      ctx.success = function (data) {
+      ctx.success = function (data, msg) {
           ctx.type = option.type || 'json'
           ctx.body = {
               code : option.successCode || 200,
-              msg : option.successMsg || 'success',
+              msg : msg || 'success',
               data : data
           }
       }
