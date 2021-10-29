@@ -5,8 +5,9 @@ const verify = Promise.promisify(jwt.verify)
 async function check(ctx, next) {
   try{
     let url = ctx.request.url
+    const {status} = ctx.request.body
     // 登录 不用检查
-    if (url == "/login") await next()
+    if (url == "/login" || typeof status !== 'undefined') await next()
     else {
       let token = ctx.request.headers["authorization"]
       if (token) {

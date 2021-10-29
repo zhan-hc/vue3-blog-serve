@@ -18,7 +18,12 @@ async function dbInit() {
             'host': '127.0.0.1',    // 数据库服务器ip
             'port': '3306',         // 数据库运行端口
             'timestamp': false,     // 这个参数为true是MySQL会自动给每条数据添加createdAt和updateAt字段
-            'quoteIdentifiers': true
+            'quoteIdentifiers': true,
+            dialectOptions: {
+              charset: 'utf8mb4',
+              dateStrings: true,
+              typeCast: true
+            }
         }
     );
     models.forEach((item, index) => {

@@ -6,22 +6,28 @@ router.prefix('/blog/tag')
 
 // 获取博客标签
 router.post('/getBlogTagList',  async function (ctx, next) {
-  const { pageSize,currentPage, tagName } = ctx.request.body
-  let data = await db.Tag.findAndCountAll({
-    offset: (currentPage - 1) * pageSize,
-    limit: pageSize,
+  const { pageSize,currentPage, tagName,status } = ctx.request.body
+  const params = {
+    // offset: (currentPage - 1) * pageSize,
+    // limit: pageSize,
     order: [
-      // 将转义 title 并针对有效方向列表进行降序排列
       ['createTime', 'DESC']
     ],
     where: {
       tagName: {
         // 模糊查询
-        [Op.like]:'%' +tagName + '%'
+        [Op.like]:`%${typeof tagName !== 'undefined' ? tagName : ''}%`
       }
     }
-  })
-  ctx.success(data, '获取博客标签')
+  }
+  if(typeof status !== 'undefined')  params.where.status = status
+  // 如果有pagesize和currentpage
+  if (typeof pageSize !== 'undefined' && typeof currentPage !== 'undefined') {
+    params.offset = (currentPage - 1) * pageSize
+    params.limit = pageSize
+  }
+  let data = await db.Tag.findAndCountAll(params)
+  ctx.success(data, '获取博客标签成功')
   // if (data.rows.length > 0) {
   //   ctx.success(data, '获取博客标签')
   // } else {

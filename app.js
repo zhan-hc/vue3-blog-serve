@@ -9,7 +9,8 @@ let routerResponse =  require('./utils/routerResponse')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const login = require('./routes/login')
-const tag = require('./routes/blogSystem/blogTag')
+const tag = require('./routes/blogSystem/tag')
+const article = require('./routes/blogSystem/article')
 const check = require('./utils/check')
 // const cors = require('koa-cors');
 // error handler
@@ -48,6 +49,7 @@ app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 app.use(login.routes(), login.allowedMethods())
 app.use(tag.routes(), tag.allowedMethods())
+app.use(article.routes(), article.allowedMethods())
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
