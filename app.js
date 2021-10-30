@@ -10,13 +10,14 @@ const index = require('./routes/index')
 const users = require('./routes/users')
 const login = require('./routes/login')
 const tag = require('./routes/blogSystem/tag')
+const upload = require('./routes/blogSystem/upload')
 const article = require('./routes/blogSystem/article')
 const check = require('./utils/check')
-// const cors = require('koa-cors');
+const cors = require('koa-cors');
 // error handler
 onerror(app)
 
-
+app.use(cors())
 // middlewares
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
@@ -49,6 +50,7 @@ app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 app.use(login.routes(), login.allowedMethods())
 app.use(tag.routes(), tag.allowedMethods())
+app.use(upload.routes(), upload.allowedMethods())
 app.use(article.routes(), article.allowedMethods())
 // error-handling
 app.on('error', (err, ctx) => {
