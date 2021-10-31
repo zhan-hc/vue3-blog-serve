@@ -1,7 +1,6 @@
 const router = require('koa-router')()
 const db = require('../../utils/db')
 const Sequelize = require('sequelize')
-const { DATE } = require('sequelize')
 const Op = Sequelize.Op
 router.prefix('/blog/article')
 
@@ -41,7 +40,8 @@ router.post('/addBlogArticle',  async function (ctx, next) {
   let data = await db.Article.create({
     ...ctx.request.body,
     'tag_id': tagId.toString(),
-    createTime: new Date()
+    createTime: new Date(),
+    updateTime: new Date()
   })
   if (data) {
     ctx.success(data.id, '创建博客文章成功')
@@ -54,7 +54,8 @@ router.post('/updateBlogArticle',  async function (ctx, next) {
   const { id, title,tagId,desc,content,pageImage } = ctx.request.body
   const params = {
     ...ctx.request.body,
-    'tag_id': tagId.toString()
+    'tag_id': tagId.toString(),
+    updateTime: new Date()
   }
   delete params.tagId
   console.log('sadsadkjsdghksj',params)

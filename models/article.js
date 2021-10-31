@@ -35,6 +35,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
+    updateTime: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     star: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -42,9 +46,9 @@ module.exports = function(sequelize, DataTypes) {
       comment: "点赞数"
     },
     reading: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED.ZEROFILL,
       allowNull: true,
-      defaultValue: 0,
+      defaultValue: 0000000001,
       comment: "阅读量"
     },
     status: {
