@@ -5,9 +5,9 @@ const verify = Promise.promisify(jwt.verify)
 async function check(ctx, next) {
   try{
     let url = ctx.request.url
-    const {status} = ctx.request.body
-    // 登录 不用检查
-    if (url == "/login" || typeof status !== 'undefined') await next()
+    const {check} = ctx.request.body
+    // 登录|前端搜索上线的列表接口不用检查
+    if (url == "/login" || !check) await next()
     else {
       let token = ctx.request.headers["authorization"]
       if (token) {
@@ -17,7 +17,7 @@ async function check(ctx, next) {
           await next()
         }
       } else {
-        ctx.fail('请登录',501)
+        ctx.fail('请登录',10011)
       }
     }
   } catch (err) {

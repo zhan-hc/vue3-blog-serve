@@ -35,14 +35,14 @@ router.post('/getBlogArticleList',  async function (ctx, next) {
 // 添加博客文章
 router.post('/addBlogArticle',  async function (ctx, next) {
   const { title,content,desc,tagId } = ctx.request.body
-  console.log('sadsad')
-  console.log(ctx.request.body)
-  let data = await db.Article.create({
+  const params = {
     ...ctx.request.body,
     'tag_id': tagId.toString(),
     createTime: new Date(),
     updateTime: new Date()
-  })
+  }
+  delete params.check
+  let data = await db.Article.create(params)
   if (data) {
     ctx.success(data.id, '创建博客文章成功')
   } else {
@@ -58,7 +58,7 @@ router.post('/updateBlogArticle',  async function (ctx, next) {
     updateTime: new Date()
   }
   delete params.tagId
-  console.log('sadsadkjsdghksj',params)
+  delete params.check
   let data = await db.Article.update(params, {
     where: {
       id: id
@@ -72,6 +72,30 @@ router.post('/updateBlogArticle',  async function (ctx, next) {
   // } else {
   //   ctx.fail('博客文章更改名称重复', 4001)
   // }
+})
+
+// 增加阅读量
+router.post('/addArticleReading',  async function (ctx, next) {
+  const { id } = ctx.request.body
+  let data = await db.Article.findAll({
+    attributes:['reading'],
+    where: {
+      id: id
+    }
+  })
+  // ctx.success(data, '更改文章量成功')
+  if (data.length === 1) {
+      const params = {
+        reading: data[0].reading + 1
+      }
+      console.log(params)
+    let status = await db.Article.update(params, {
+      where: {
+        id: id
+      }
+    })
+    ctx.success(status, '更改文章量成功')
+  }
 })
 
 // 上下线博客文章
