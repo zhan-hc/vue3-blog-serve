@@ -9,7 +9,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     username: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: true,
+      comment: "登录的用户名"
     },
     password: {
       type: DataTypes.STRING(32),
@@ -22,6 +23,29 @@ module.exports = function(sequelize, DataTypes) {
     updateTime: {
       type: DataTypes.DATE,
       allowNull: true
+    },
+    blogname: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+      defaultValue: "",
+      comment: "博客用户名"
+    },
+    motto: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      defaultValue: "",
+      comment: "个性签名"
+    },
+    github: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      defaultValue: ""
+    },
+    avatar: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      defaultValue: "",
+      comment: "头像图片链接"
     }
   }, {
     sequelize,
