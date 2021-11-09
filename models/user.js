@@ -44,7 +44,6 @@ module.exports = function(sequelize, DataTypes) {
     avatar: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      defaultValue: "",
       comment: "头像图片链接"
     }
   }, {
