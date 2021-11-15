@@ -6,7 +6,7 @@ router.prefix('/blog/tag')
 
 // 获取博客标签
 router.post('/getBlogTagList',  async function (ctx, next) {
-  const { pageSize,currentPage, tagName,status } = ctx.request.body
+  const { pageSize,currentPage, keyword,status } = ctx.request.body
   const params = {
     // offset: (currentPage - 1) * pageSize,
     // limit: pageSize,
@@ -16,7 +16,7 @@ router.post('/getBlogTagList',  async function (ctx, next) {
     where: {
       tagName: {
         // 模糊查询
-        [Op.like]:`%${typeof tagName !== 'undefined' ? tagName : ''}%`
+        [Op.like]:`%${typeof keyword !== 'undefined' ? keyword : ''}%`
       }
     }
   }

@@ -6,7 +6,7 @@ router.prefix('/blog/article')
 
 // 获取博客文章
 router.post('/getBlogArticleList',  async function (ctx, next) {
-  const { pageSize,currentPage, title, id, status} = ctx.request.body
+  const { pageSize,currentPage, keyword, id, status} = ctx.request.body
   const params = {
     order: [
       ['createTime', 'DESC']
@@ -14,7 +14,7 @@ router.post('/getBlogArticleList',  async function (ctx, next) {
     where: {
       title: {
         // 模糊查询
-        [Op.like]:`%${typeof title !== 'undefined' ? title : ''}%`
+        [Op.like]:`%${typeof keyword !== 'undefined' ? keyword : ''}%`
       }
     }
   }
