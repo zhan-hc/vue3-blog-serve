@@ -37,7 +37,7 @@ router.post('/addBlogArticle',  async function (ctx, next) {
   const { title,content,desc,tagId } = ctx.request.body
   const params = {
     ...ctx.request.body,
-    'tag_id': tagId.toString(),
+    'tagId': tagId.toString(),
     createTime: new Date(),
     updateTime: new Date()
   }
@@ -54,7 +54,7 @@ router.post('/updateBlogArticle',  async function (ctx, next) {
   const { id, title,tagId,desc,content,pageImage } = ctx.request.body
   const params = {
     ...ctx.request.body,
-    'tag_id': tagId.toString(),
+    'tagId': tagId.toString(),
     updateTime: new Date()
   }
   delete params.tagId

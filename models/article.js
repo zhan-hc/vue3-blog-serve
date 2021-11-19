@@ -12,9 +12,15 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       comment: "标题"
     },
-    tag_id: {
+    tagId: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: true,
+      comment: "标签id"
+    },
+    categoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: "分类id"
     },
     desc: {
       type: DataTypes.STRING(255),
@@ -74,7 +80,7 @@ module.exports = function(sequelize, DataTypes) {
         name: "tag_id",
         using: "BTREE",
         fields: [
-          { name: "tag_id" },
+          { name: "tagId" },
         ]
       },
     ]
