@@ -35,11 +35,14 @@ router.post('/file', upload('file').single('file'), async(ctx, next) => {
   const fileName = ctx.req.file.filename
   const chunkName = `${ctx.req.body.chunkName}.${ctx.req.file.originalname}`
   try {
-      const filePath = path.join(__dirname,`../../public/file/${folderName}`)
-      await operate.exitsFolder(filePath);
-      setTimeout(() => {
-        operate.moveFile(fileName,folderName,chunkName)
-      },500)
+    const filePath = path.join(__dirname,`../../public/file/${folderName}`)
+    // 判断文件夹是否存在
+    if (!fs.existsSync(filePath)) {
+      fs.mkdir(filePath, err => {
+        if (err) throw err;
+      });
+    }
+      await operate.moveFile(fileName,folderName,chunkName)
       
   } catch (e) {
       throw Error(e.msg);
@@ -50,7 +53,7 @@ router.post('/file', upload('file').single('file'), async(ctx, next) => {
 router.post('/mergeChunkFile', async(ctx, next) => {
   const {fileName, chunkName} = ctx.request.body
   // 存放切块的路径
-  const chunkDir = path.join(__dirname,`../../public/file/${fileName}`)
+  const chunkDir = path.join(__dirname,`../../public/file/mergeFile/${fileName}`)
   
   await operate.mergeFileChunk(chunkDir,chunkName)
   fs.rmdirSync(path.join(__dirname,`../../public/file/${chunkName}`));
@@ -59,10 +62,31 @@ router.post('/mergeChunkFile', async(ctx, next) => {
 })
 
 router.post('/verifyFile', async(ctx, next) => {
-  const {key} = ctx.request.body
+  /*
+    key: 文件hash
+    chunkFile: 文件夹名称
+    chunkLen：切片总数
+  */
+  const {key,chunkName,chunkLen} = ctx.request.body
+  console.log(key,chunkName,chunkLen,'------------------')
   const shouldUpload = operate.hasFile(key)
+  const filePath = path.join(__dirname,`../../public/file/${chunkName}`)
+  let uploadChunk = []
+    // 判断文件夹是否存在
+    if (chunkName && fs.existsSync(filePath)) {
+      chunkFiles = fs.readdirSync(`public/file/${chunkName}`)
+      console.log(`-----------------------文件夹${chunkName}存在-------------+++++++++++++++++++++`,chunkFiles)
+      if (chunkFiles.length < chunkLen) {
+        const eq = (str) => parseInt(str.slice(str.lastIndexOf('-')+1,str.lastIndexOf('.')))
+        // console.log(chunkFiles,'---chunkFiles')
+        uploadChunk = chunkFiles.map(item => eq(item))
+        console.log(chunkFiles.map(item => eq(item)))
+        // ctx.success(uploadChunk,'有切片未上传成功')
+      }
+    }
   ctx.success({
-    shouldUpload
+    shouldUpload,
+    uploadChunk
   },'上传文件成功')
 })
 

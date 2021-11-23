@@ -14,21 +14,18 @@ exitsFolder = async function (reaPath) {
   });
 }
 // 移动文件
-moveFile = function (fileName,movePath,newFileName) {
+moveFile = async function (fileName,movePath,newFileName) {
   var sourceFile = path.join(__dirname, `../public/file/${fileName}`);
   var destPath = path.join(__dirname, `../public/file/${movePath}`, newFileName);
-  console.log(sourceFile,'---',destPath)
 fs.rename(sourceFile, destPath, function (err) {
   if (err) throw err;
   fs.stat(destPath, function (err, stats) {
     if (err) throw err;
-    // console.log('stats: ' + JSON.stringify(stats));
   });
 });
 }
 
 const pipeStream = (path, writeStream) => {
-  console.log('path', path)
   return new Promise(resolve => {
       const readStream = fs.createReadStream(path);
       readStream.on("end", () => {
@@ -54,7 +51,6 @@ const mergeFileChunk = async (filePath, chunkName, size = 5 * 1024 * 1024) => {
   const eq = (str) => parseInt(str.slice(str.lastIndexOf('-')+1,str.lastIndexOf('.')))
   // 因为是异步请求所以索引顺序不一定一致
   chunkPaths.sort((a, b) => eq(a) - eq(b))
-  console.log(`public/file/${chunkName}`, chunkPaths,'chunkPaths')
   const arr = chunkPaths.map((chunkPath, index) => {
       return pipeStream(
           path.resolve(chunkDir, chunkPath),
@@ -70,7 +66,7 @@ const mergeFileChunk = async (filePath, chunkName, size = 5 * 1024 * 1024) => {
 
 // 获取文件hash
 function createHash (fileName) {
-  const buffer = fs.readFileSync(path.join(__dirname,`../public/file/${fileName}`));
+  const buffer = fs.readFileSync(path.join(__dirname,`../public/file/mergeFile/${fileName}`));
   const fsHash = crypto.createHash('md5');
 
   fsHash.update(buffer);
@@ -80,10 +76,11 @@ function createHash (fileName) {
 
 // 文件hash校验
 function hasFile (fileHash) {
-  filePaths = fs.readdirSync(`public/file`)
+  filePaths = fs.readdirSync(`public/file/mergeFile`)
   const len = filePaths.length
   let flag = true
   for(let i = 0;i<len;i++) {
+    // 先判断file里有没有该分片文件夹
     const hash = createHash(filePaths[i])
     if (fileHash === hash){
       flag = false
