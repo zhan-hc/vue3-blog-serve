@@ -53,12 +53,12 @@ router.post('/file', upload('file').single('file'), async(ctx, next) => {
 router.post('/mergeChunkFile', async(ctx, next) => {
   const {fileName, chunkName} = ctx.request.body
   // 存放切块的路径
-  const chunkDir = path.join(__dirname,`../../public/file/mergeFile/${fileName}`)
+  const mergePath = path.join(__dirname,`../../public/file/mergeFile/${fileName}`)
   
-  await operate.mergeFileChunk(chunkDir,chunkName)
+  await operate.mergeFileChunk(mergePath,chunkName)
   fs.rmdirSync(path.join(__dirname,`../../public/file/${chunkName}`));
  
-  ctx.success('buf','上传文件成功')
+  ctx.success(fileName,'合并文件成功文件成功')
 })
 
 router.post('/verifyFile', async(ctx, next) => {

@@ -17,12 +17,12 @@ exitsFolder = async function (reaPath) {
 moveFile = async function (fileName,movePath,newFileName) {
   var sourceFile = path.join(__dirname, `../public/file/${fileName}`);
   var destPath = path.join(__dirname, `../public/file/${movePath}`, newFileName);
-fs.rename(sourceFile, destPath, function (err) {
-  if (err) throw err;
-  fs.stat(destPath, function (err, stats) {
+  fs.rename(sourceFile, destPath, function (err) {
     if (err) throw err;
+    // fs.stat(destPath, function (err, stats) {
+    //   if (err) throw err;
+    // });
   });
-});
 }
 
 const pipeStream = (path, writeStream) => {
@@ -42,9 +42,8 @@ const mergeFileChunk = async (filePath, chunkName, size = 5 * 1024 * 1024) => {
   // filePath：将切片合并的路径
   // 切片文件路径
   const chunkDir = path.join(__dirname,`../public/file/${chunkName}`)
-  let chunkPaths = null
   // 获取切片文件夹里所有切片，返回一个数组
-  chunkPaths = fs.readdirSync(`public/file/${chunkName}`)
+  let chunkPaths = fs.readdirSync(`public/file/${chunkName}`)
   // 根据切片下标进行排序
   // 否则直接读取目录的获得的顺序可能会错乱
   // 截取索引
@@ -68,7 +67,6 @@ const mergeFileChunk = async (filePath, chunkName, size = 5 * 1024 * 1024) => {
 function createHash (fileName) {
   const buffer = fs.readFileSync(path.join(__dirname,`../public/file/mergeFile/${fileName}`));
   const fsHash = crypto.createHash('md5');
-
   fsHash.update(buffer);
   const md5 = fsHash.digest('hex');
   return md5
