@@ -18,7 +18,7 @@ module.exports = function(sequelize, DataTypes) {
       comment: "标签id"
     },
     categoryId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(20),
       allowNull: true,
       comment: "分类id"
     },
